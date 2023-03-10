@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use App\Http\Requests\CreateMovieRequest;
+use App\Http\Requests\UpdateMovieRequest;
+use Exception;
 
 class AdminMovieController extends Controller
 {
@@ -31,7 +34,7 @@ class AdminMovieController extends Controller
             ]
         );
 
-        $newMovie = Movie::create([
+        Movie::create([
             "title" => $validate['title'],
             "image_url" => $request->image_url,
             "published_year" => $request->published_year,
@@ -40,5 +43,33 @@ class AdminMovieController extends Controller
         ]);
 
         return redirect("movies/index");
+    }
+
+    public function edit($id)
+    {
+        $movie = Movie::find($id);
+        return view('movies/edit')->with(['movie' => $movie]);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate(
+            [
+                "title" => 'required|unique:movies,title',
+                "image_url" => 'required|url',
+                "published_year" => 'required|numeric',
+                "is_showing" => 'required',
+                "description" => 'required',
+            ]
+        );
+        Movie::where('id', '=', $request->id)
+            ->update([
+                'title'       => $request->title,
+                'image_url'   => $request->image_url,
+                'description' => $request->description,
+                'is_showing'  => $request->is_showing,
+                'published_year' => $request->published_year,
+            ]);
+        return response()->view('movies/index', ['movies' => Movie::all()], 302);
     }
 }

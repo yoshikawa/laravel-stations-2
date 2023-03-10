@@ -20,20 +20,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('practice', function() {
-//     return response('practice');
-// });
-
-// Route::get('practice2', function() {
-//     $test = 'practice2';
-//     return response($test);
-// });
-
-// Route::get('practice3', function() {
-//     $test = 'test';
-//     return response($test);
-// });
-
 Route::get('/practice', [PracticeController::class, 'sample']);
 Route::get('/practice2', [PracticeController::class, 'sample2']);
 Route::get('/practice3', [PracticeController::class, 'sample3']);
@@ -45,4 +31,6 @@ Route::prefix('/admin/movies')->group(function () {
     Route::get('/', [AdminMovieController::class, 'index']);
     Route::get('/create', [AdminMovieController::class, 'create']);
     Route::post('/store', [AdminMovieController::class, 'store']);
+    Route::get('/{id}/edit', [AdminMovieController::class, 'edit']);
+    Route::patch('/{id}/update', [AdminMovieController::class, 'update']);
 });

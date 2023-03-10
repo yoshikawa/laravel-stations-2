@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticeController;
+use App\Http\Controllers\MovieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,3 +38,5 @@ Route::get('/practice2', [PracticeController::class, 'sample2']);
 Route::get('/practice3', [PracticeController::class, 'sample3']);
 // chapter4
 Route::get('/getPractice', [PracticeController::class, 'getPractice']);
+// chapter6
+Route::get('/movies', [MovieController::class, 'index']);

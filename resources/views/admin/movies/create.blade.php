@@ -47,6 +47,12 @@
                     <td><textarea name='description' id='description' rows='5' cols='35'></textarea></td>
                 </tr>
             </div>
+            <div class='movie_create_form'>
+                <tr>
+                    <th><label for='genre'> ジャンル名：</label></th>
+                    <td><input type='text' name='genre' id='genre'></td>
+                </tr>
+            </div>
         </table>
         <div class='movie_create_form'>
             <input type='submit' value='登録'>

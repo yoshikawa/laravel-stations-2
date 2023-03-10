@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Movie;
+use App\Models\Genre;
 use App\Http\Requests\CreateMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
-use Exception;
 
 class AdminMovieController extends Controller
 {
@@ -22,27 +22,45 @@ class AdminMovieController extends Controller
         return view('admin/movies/create', ['movies' => $movies]);
     }
 
-    public function store(Request $request)
+    public function store(CreateMovieRequest $request)
     {
-        $validate = $request->validate(
-            [
-                "title" => 'required|unique:movies,title',
-                "image_url" => 'required|url',
-                "published_year" => 'required|numeric',
-                "is_showing" => 'required',
-                "description" => 'required',
-            ]
-        );
+        DB::beginTransaction();
+		try{
+			$genre_name = $request->genre;
+			if ($genre_name){
+				$is_genre_name_record = Genre::where('name', $genre_name)->first();
 
-        Movie::create([
-            "title" => $validate['title'],
-            "image_url" => $request->image_url,
-            "published_year" => $request->published_year,
-            "is_showing" => $request->is_showing,
-            "description" => $request->description,
-        ]);
-
-        return redirect("movies/index");
+				if(!$is_genre_name_record){
+					$result = Genre::create([
+						"name" => $genre_name
+					]);
+					if ($result){
+						$genre_id = $result->id;
+					}else {
+						return redirect()
+						->route('admin.movies.create')
+						->withError('ジャンルテーブルへの登録が失敗しました。');
+					}
+				}else{
+					$genre_id = $is_genre_name_record->id;
+				}
+			}
+			$result = Movie::create([
+				"title" => $request->title,
+				"image_url" => $request->image_url,
+				"published_year" => $request->published_year,
+				"is_showing" => $request->is_showing,
+				"description" => $request->description,
+				"genre_id" => $genre_id
+			]);
+			DB::commit();
+			return redirect("movies")
+				->withSuccess('データを登録しました。');
+		} catch(\Throwable $e){
+            DB::rollback();
+			report($e);
+			abort(500);
+		}
     }
 
     public function edit($id)
@@ -51,26 +69,42 @@ class AdminMovieController extends Controller
         return view('movies/edit')->with(['movie' => $movie]);
     }
 
-    public function update(Request $request)
+    public function update(UpdateMovieRequest $request, $id)
     {
-        $request->validate(
-            [
-                "title" => 'required|unique:movies,title',
-                "image_url" => 'required|url',
-                "published_year" => 'required|numeric',
-                "is_showing" => 'required',
-                "description" => 'required',
-            ]
-        );
-        Movie::where('id', '=', $request->id)
-            ->update([
-                'title'       => $request->title,
-                'image_url'   => $request->image_url,
-                'description' => $request->description,
-                'is_showing'  => $request->is_showing,
-                'published_year' => $request->published_year,
-            ]);
-        return response()->view('movies/index', ['movies' => Movie::all()], 302);
+        DB::beginTransaction();
+		try{
+			$genre_name = $request->genre;
+			if ($genre_name){
+				$is_genre_name_record = Genre::where('name', $genre_name)->first();
+
+				if(!$is_genre_name_record){
+					$result = Genre::create([
+						"name" => $genre_name
+					]);
+					if ($result){
+						$genre_id = $result->id;
+					}
+				}else{
+					$genre_id = $is_genre_name_record->id;
+				}
+			}
+			$movie = Movie::find($id);
+			$result = $movie->update([  
+				"title" => $request->title,
+				"image_url" => $request->image_url,
+				"published_year" => $request->published_year,
+				"is_showing" => $request->is_showing,
+				"description" => $request->description,
+				"genre_id" => $genre_id
+		]);
+			DB::commit();
+			return redirect("movies")
+				->withSuccess('データを更新しました。');
+		} catch(\Throwable $e){
+            DB::rollback();
+			report($e);
+			abort(500);
+		}
     }
 
     public function destroy($id)

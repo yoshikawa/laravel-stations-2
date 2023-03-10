@@ -60,6 +60,14 @@
         @endif
         <textarea name="description" id="" cols="30" rows="10" required>{{old('description',$movie->description)}}</textarea>
 
+        <p>概要</p>
+        @if ($errors->has('genre'))
+        @foreach ($errors->get('genre') as $error)
+        <p>{{$error}}</p>
+        @endforeach
+        @endif
+        <input name='genre' type="text" value="{{old('genre',$movie->genre->name)}}" required>
+
         <input type="submit" value="送信">
     </form>
     <script>

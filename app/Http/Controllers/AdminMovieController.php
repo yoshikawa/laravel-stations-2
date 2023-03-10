@@ -72,4 +72,15 @@ class AdminMovieController extends Controller
             ]);
         return response()->view('movies/index', ['movies' => Movie::all()], 302);
     }
+
+    public function destroy($id)
+    {
+        $movie = Movie::find($id);
+        if (is_null($movie)) {
+            abort(404);
+        }
+        $movie->delete();
+        session()->flash('flashmessage', '映画の削除が完了しました。');
+        return redirect('/admin/movies')->with(['movies' => Movie::all()]);
+    }
 }

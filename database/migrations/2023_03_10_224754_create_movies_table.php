@@ -16,7 +16,10 @@ class CreateMoviesTable extends Migration
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
             $table->text('title')->comment('タイトル');
-            $table->text('image_url')->comment('タイトル');
+            $table->text('image_url');
+            $table->year('published_year');
+            $table->tinyInteger('is_showing')->default('0');
+            $table->text('description');
             $table->timestamps();
         });
     }

@@ -10,38 +10,38 @@ use App\Http\Requests\UpdateMovieRequest;
 
 class AdminMovieController extends Controller
 {
-    public function index()
-    {
-        $movies = Movie::all();
-        return view('movies/index', ['movies' => $movies]);
-    }
+	public function index()
+	{
+		$movies = Movie::all();
+		return view('movies/index', ['movies' => $movies]);
+	}
 
-    public function create()
-    {
-        $movies = Movie::all();
-        return view('admin/movies/create', ['movies' => $movies]);
-    }
+	public function create()
+	{
+		$movies = Movie::all();
+		return view('admin/movies/create', ['movies' => $movies]);
+	}
 
-    public function store(CreateMovieRequest $request)
-    {
-        DB::beginTransaction();
-		try{
+	public function store(CreateMovieRequest $request)
+	{
+		DB::beginTransaction();
+		try {
 			$genre_name = $request->genre;
-			if ($genre_name){
+			if ($genre_name) {
 				$is_genre_name_record = Genre::where('name', $genre_name)->first();
 
-				if(!$is_genre_name_record){
+				if (!$is_genre_name_record) {
 					$result = Genre::create([
 						"name" => $genre_name
 					]);
-					if ($result){
+					if ($result) {
 						$genre_id = $result->id;
-					}else {
+					} else {
 						return redirect()
-						->route('admin.movies.create')
-						->withError('ジャンルテーブルへの登録が失敗しました。');
+							->route('admin.movies.create')
+							->withError('ジャンルテーブルへの登録が失敗しました。');
 					}
-				}else{
+				} else {
 					$genre_id = $is_genre_name_record->id;
 				}
 			}
@@ -56,65 +56,65 @@ class AdminMovieController extends Controller
 			DB::commit();
 			return redirect("movies")
 				->withSuccess('データを登録しました。');
-		} catch(\Throwable $e){
-            DB::rollback();
+		} catch (\Throwable $e) {
+			DB::rollback();
 			report($e);
 			abort(500);
 		}
-    }
+	}
 
-    public function edit($id)
-    {
-        $movie = Movie::find($id);
-        return view('movies/edit')->with(['movie' => $movie]);
-    }
+	public function edit($id)
+	{
+		$movie = Movie::find($id);
+		return view('movies/edit')->with(['movie' => $movie]);
+	}
 
-    public function update(UpdateMovieRequest $request, $id)
-    {
-        DB::beginTransaction();
-		try{
+	public function update(UpdateMovieRequest $request, $id)
+	{
+		DB::beginTransaction();
+		try {
 			$genre_name = $request->genre;
-			if ($genre_name){
+			if ($genre_name) {
 				$is_genre_name_record = Genre::where('name', $genre_name)->first();
 
-				if(!$is_genre_name_record){
+				if (!$is_genre_name_record) {
 					$result = Genre::create([
 						"name" => $genre_name
 					]);
-					if ($result){
+					if ($result) {
 						$genre_id = $result->id;
 					}
-				}else{
+				} else {
 					$genre_id = $is_genre_name_record->id;
 				}
 			}
 			$movie = Movie::find($id);
-			$result = $movie->update([  
+			$result = $movie->update([
 				"title" => $request->title,
 				"image_url" => $request->image_url,
 				"published_year" => $request->published_year,
 				"is_showing" => $request->is_showing,
 				"description" => $request->description,
 				"genre_id" => $genre_id
-		]);
+			]);
 			DB::commit();
 			return redirect("movies")
 				->withSuccess('データを更新しました。');
-		} catch(\Throwable $e){
-            DB::rollback();
+		} catch (\Throwable $e) {
+			DB::rollback();
 			report($e);
 			abort(500);
 		}
-    }
+	}
 
-    public function destroy($id)
-    {
-        $movie = Movie::find($id);
-        if (is_null($movie)) {
-            abort(404);
-        }
-        $movie->delete();
-        session()->flash('flashmessage', '映画の削除が完了しました。');
-        return redirect('/admin/movies')->with(['movies' => Movie::all()]);
-    }
+	public function destroy($id)
+	{
+		$movie = Movie::find($id);
+		if (is_null($movie)) {
+			abort(404);
+		}
+		$movie->delete();
+		session()->flash('flashmessage', '映画の削除が完了しました。');
+		return redirect('/admin/movies')->with(['movies' => Movie::all()]);
+	}
 }

@@ -14,7 +14,7 @@ class GenreFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->unique()->word,
+            'name' => $this->faker->unique()->word,
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Genre;
 use App\Models\Movie;
+use App\Models\Schedule;
 use App\Practice;
 use Illuminate\Database\Seeder;
 
@@ -20,5 +21,6 @@ class DatabaseSeeder extends Seeder
         Movie::factory(10)->create();
         Genre::factory(10)->create();
         $this->call(SheetTableSeeder::class);
+        Schedule::factory(10)->create();
     }
 }

@@ -117,4 +117,9 @@ class AdminMovieController extends Controller
 		session()->flash('flashmessage', '映画の削除が完了しました。');
 		return redirect('/admin/movies')->with(['movies' => Movie::all()]);
 	}
+
+	public function show($id)
+	{
+		return view('movies/show', ['movie' => Movie::with('schedules')->find($id)]);
+	}
 }

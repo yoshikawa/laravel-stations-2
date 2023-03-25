@@ -23,7 +23,13 @@ class Movie extends Model
         'is_showing',
         'genre_id'
     ];
-    public function genre(){
+    public function genre()
+    {
         return $this->belongsTo(Genre::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
     }
 }

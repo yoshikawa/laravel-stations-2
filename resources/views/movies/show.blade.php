@@ -41,12 +41,30 @@
         </tr>
         <tr>
             <th>映画情報作成日時</th>
-            <td>{{ $movie->created_at }}</td>
+            <td>{{date('Y-m-d H:i:s', strtotime($movie->created_at))}}</td>
         </tr>
         <tr>
             <th>映画情報更新日時</th>
-            <td>{{ $movie->updated_at }}</td>
+            <td>{{date('Y-m-d H:i:s', strtotime($movie->updated_at))}}</td>
         </tr>
+        <tr>
+            <th>開始</th>
+            <td>終了</td>
+        </tr>
+        @foreach($movie->schedules->sortBy('start_time') as $schedule)
+        <tr>
+            <td>{{date('H:i', strtotime($schedule->start_time))}}</td>
+            <td>{{date('H:i', strtotime($schedule->end_time))}}</td>
+        </tr>
+        <tr>
+            <th>上映情報作成日時</th>
+            <td>{{date('Y-m-d H:i:s', strtotime($schedule->created_at))}}</td>
+        </tr>
+        <tr>
+            <th>上映情報更新日時</th>
+            <td>{{date('Y-m-d H:i:s', strtotime($schedule->updated_at))}}</td>
+        </tr>
+        @endforeach
     </table>
 </div>
 

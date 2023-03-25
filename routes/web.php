@@ -36,5 +36,6 @@ Route::prefix('/admin/movies')->group(function () {
     Route::get('/{id}/edit', [AdminMovieController::class, 'edit']);
     Route::patch('/{id}/update', [AdminMovieController::class, 'update']);
     Route::delete('/{id}/destroy', [AdminMovieController::class, 'destroy']);
+    Route::get('/{id}', [AdminMovieController::class, 'show']);
 });
 Route::get('/sheets', [SheetController::class, 'index']);

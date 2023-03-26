@@ -32,10 +32,7 @@ class AdminScheduleController extends Controller
 	{
 		try {
 			$post = new Schedule();
-			$post->movie_id = $request->movie_id;
-			$post->start_time = $request->start_time_time;
-			$post->end_time = $request->end_time_time;
-			$post->save();
+			$post->storeSchedule($request);
 			return response()->view('admin/schedules/store', ['request' => $request], 302);
 		} catch (Exception $e) {
 			session()->flash('fhashmessage', 'エラーが発生しました。');

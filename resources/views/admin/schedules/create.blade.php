@@ -18,10 +18,13 @@
         <h1>スケジュール登録フォーム</h1>
     </div>
     <form action='store' method='post' class='schedule_create'>
+        @csrf
+        @method("POST")
         <div class='movie_title'>
             <h2>作品ID：{{ $movie->id }}　作品タイトル{{ $movie->title }}</h2>
         </div>
         <div class='movie_schedule'>
+            <input type="hidden" name='movie_id' value={{$movie->id}}>
             <table>
                 <tr>
                     <td>開始日付：<input type='date' name='start_time_date' id='start_time_date'></td>

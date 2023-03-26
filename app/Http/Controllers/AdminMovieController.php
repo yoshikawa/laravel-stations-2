@@ -120,6 +120,6 @@ class AdminMovieController extends Controller
 
 	public function show($id)
 	{
-		return view('movies/show', ['movie' => Movie::with('schedules')->find($id)]);
+		return view('admin/movies/show', ['movie' => Movie::with('schedules')->find($id)]);
 	}
 }

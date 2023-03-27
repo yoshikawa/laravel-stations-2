@@ -19,12 +19,20 @@ class Schedule extends Model
     protected $fillable = [
         'movie_id',
         'start_time',
-        'end_time'
+        'end_time',
+        'start_date',
+        'end_date',
+        'start_time_date',
+        'start_time_time',
+        'end_time_date',
+        'end_time_time'
     ];
 
     protected $dates = [
         'start_time',
         'end_time',
+        'start_date',
+        'end_date',
         'start_time_date',
         'start_time_time',
         'end_time_date',

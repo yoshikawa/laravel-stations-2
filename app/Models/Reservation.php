@@ -61,7 +61,7 @@ class Reservation extends Model
             $request->date = new CarbonImmutable();
         }
         DB::transaction(function () use ($reservation_id, $request) {
-            Reservation::where('id', '=', $reservation_id)
+            Reservation::where('id = ?', $reservation_id)
                 ->update([
                     "date" => $request->date,
                     "schedule_id"    => $request->schedule_id,
@@ -75,7 +75,7 @@ class Reservation extends Model
     public static function deleteReservation($reservation_id)
     {
         DB::transaction(function () use ($reservation_id) {
-            Reservation::where('id', '=', $reservation_id)
+            Reservation::where('id = ?', $reservation_id)
                 ->delete();
         });
     }
@@ -90,13 +90,13 @@ class Reservation extends Model
 
     public static function isExist($reservation_id)
     {
-        return Reservation::where('id', '=', $reservation_id)->exists();
+        return Reservation::where('id = ?', $reservation_id)->exists();
     }
 
 
     public static function isAlreadyReserved($schedule_id)
     {
-        $returnValueList = Reservation::select("sheet_id")->where("schedule_id", "=", $schedule_id)->get();
+        $returnValueList = Reservation::select("sheet_id")->where("schedule_id = ?", $schedule_id)->get();
         $reservedSheetList = [];
 
         foreach ($returnValueList as $returnValue) {
@@ -108,15 +108,15 @@ class Reservation extends Model
 
     public function isAlreadyExist($request)
     {
-        return Reservation::where("schedule_id", "=", $request->schedule_id)
-            ->where("sheet_id", "=", $request->sheet_id)
+        return Reservation::where("schedule_id = ?", $request->schedule_id)
+            ->where("sheet_id = ?", $request->sheet_id)
             ->exists();
     }
 
     public function isReserved($request, $schedule_id)
     {
-        return Reservation::where("schedule_id", "=", $schedule_id)
-            ->where("sheet_id", "=", $request->sheetId)
+        return Reservation::where("schedule_id = ?", $schedule_id)
+            ->where("sheet_id = ?", $request->sheetId)
             ->exists();
     }
 }

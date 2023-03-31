@@ -10,6 +10,6 @@ class SheetController extends Controller
     public function index()
     {
         $sheets = Sheet::all();
-        return view('sheets/index', ['sheets' => $sheets]);
+        return view('sheets/detail', ['sheets' => $sheets]);
     }
 }

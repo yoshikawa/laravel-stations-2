@@ -27,7 +27,7 @@ class CreateReservationRequest extends FormRequest
             'schedule_id' => ['required'],
             'sheet_id' => ['required'],
             'name' => ['required'],
-            'email' => ['required', 'email:strict,dns'],
+            'email' => ['required', 'email:strict'],
             'date' => ['required', 'date_format:Y-m-d']
         ];
     }

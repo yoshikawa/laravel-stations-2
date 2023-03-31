@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\AdminMovieController;
+use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminScheduleController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SheetController;
 
 /*
@@ -28,8 +30,14 @@ Route::get('/practice3', [PracticeController::class, 'sample3']);
 // chapter4
 Route::get('/getPractice', [PracticeController::class, 'getPractice']);
 // chapter6
-Route::get('/movies', [MovieController::class, 'index']);
-Route::get('/movies/{id}', [MovieController::class, 'show']);
+Route::prefix('/movies')->group(function () {
+    Route::get('/', [MovieController::class, 'index']);
+    Route::get('/{id}', [MovieController::class, 'show']);
+
+    Route::get('/{movie_id}/schedules/{schedule_id}/sheets', [ReservationController::class, 'index']);
+    Route::get('/{movie_id}/schedules/{schedule_id}/reservations/create', [ReservationController::class, 'create']);
+});
+
 Route::prefix('/admin/movies')->group(function () {
     Route::get('/', [AdminMovieController::class, 'index']);
     Route::get('/create', [AdminMovieController::class, 'create']);
@@ -53,3 +61,20 @@ Route::prefix('/admin/schedules')->group(function () {
 });
 
 Route::get('/sheets', [SheetController::class, 'index']);
+
+Route::prefix('/reservations')->group(function () {
+    Route::post('/store', [ReservationController::class, 'store'])->name('reserveStore');
+});
+
+Route::prefix('admin/reservations')->group(function () {
+    Route::get('/', [AdminReservationController::class, 'index']);
+    Route::get('/create', [AdminReservationController::class, 'create']);
+    Route::post('/store', [AdminReservationController::class, 'store']);
+    Route::get('/{id}/edit', [AdminReservationController::class, 'edit']);
+    Route::patch('/{id}', [AdminReservationController::class, 'update']);
+    Route::delete('/{id}', [AdminReservationController::class, 'destroy']);
+
+    Route::fallback(function () {
+        return abort(404);
+    });
+});

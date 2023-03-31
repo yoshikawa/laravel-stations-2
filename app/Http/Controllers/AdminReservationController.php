@@ -32,7 +32,10 @@ class AdminReservationController extends Controller
 
     public function store(CreateAdminReservationRequest $request)
     {
-        if (empty($request->date) || empty($request->sheet_id) || empty($request->movie_id) || empty($request->schedule_id) || empty($request->name) || empty($request->email)) {
+        // if (empty($request->date) || empty($request->sheet_id) || empty($request->movie_id) || empty($request->schedule_id) || empty($request->name) || empty($request->email)) {
+        //     abort(400);
+        // }
+        if (empty($request->sheet_id) || empty($request->movie_id) || empty($request->schedule_id) || empty($request->name) || empty($request->email)) {
             abort(400);
         }
 
@@ -57,7 +60,10 @@ class AdminReservationController extends Controller
 
     public function update($reservation_id, UpdateAdminReservationRequest $request)
     {
-        if (empty($request->date) || empty($request->sheet_id) || empty($request->movie_id) || empty($request->schedule_id) || empty($request->name) || empty($request->email)) {
+        // if (empty($request->date) || empty($request->sheet_id) || empty($request->movie_id) || empty($request->schedule_id) || empty($request->name) || empty($request->email)) {
+        //     abort(400);
+        // }
+        if (empty($request->sheet_id) || empty($request->movie_id) || empty($request->schedule_id) || empty($request->name) || empty($request->email)) {
             abort(400);
         }
         Reservation::updateReservation($reservation_id, $request);

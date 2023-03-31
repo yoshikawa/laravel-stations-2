@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,9 @@ class Reservation extends Model
 
     public function storeReservation($request)
     {
+        if (empty($request->date)) {
+            $request->date = new CarbonImmutable();
+        }
         DB::transaction(function () use ($request) {
             Reservation::create([
                 "date" => $request->date,
@@ -53,6 +57,9 @@ class Reservation extends Model
 
     public static function updateReservation($reservation_id, $request)
     {
+        if (empty($request->date)) {
+            $request->date = new CarbonImmutable();
+        }
         DB::transaction(function () use ($reservation_id, $request) {
             Reservation::where('id', '=', $reservation_id)
                 ->update([

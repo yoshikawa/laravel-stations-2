@@ -50,14 +50,14 @@ class ReservationRepository
 
     public  function isAllReadyExist($sheet_id, $schedule_id)
     {
-        return Reservation::where("schedule_id = ?", [$schedule_id])
-            ->where("sheet_id = ?", [$sheet_id])
+        return Reservation::where("schedule_id", [$schedule_id])
+            ->where("sheet_id", [$sheet_id])
             ->exists();
     }
 
     public  function isAllreadyReserved($schedule_id)
     {
-        $returnValueList = Reservation::select("sheet_id")->where("schedule_id = ?", [$schedule_id])->get();
+        $returnValueList = Reservation::select("sheet_id")->where("schedule_id", [$schedule_id])->get();
 
         $reservedSheetList = [];
 

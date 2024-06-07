@@ -58,7 +58,7 @@ class Schedule extends Model
     public function updateSchedule($id, $request)
     {
         DB::transaction(function () use ($id, $request) {
-            Schedule::where('id', '=', $id)
+            Schedule::where('id', $id)
                 ->update([
                     'start_time' => $request->start_time_date . " " . $request->start_time_time,
                     'end_time'   => $request->end_time_date . " " . $request->end_time_time,

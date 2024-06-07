@@ -24,7 +24,7 @@ class ReservationRepository
     public  function update($reservation_id, $request)
     {
         DB::transaction(function () use ($reservation_id, $request) {
-            Reservation::where('id = ?', $reservation_id)
+            Reservation::where('id ', $reservation_id)
                 ->update([
                     "date" => $request->date,
                     "schedule_id"    => $request->schedule_id,
@@ -38,14 +38,14 @@ class ReservationRepository
     public  function delete($reservation_id)
     {
         DB::transaction(function () use ($reservation_id) {
-            Reservation::where('id = ?', $reservation_id)
+            Reservation::where('id ', $reservation_id)
                 ->delete();
         });
     }
 
     public  function isDeleted($reservation_id)
     {
-        return !(Reservation::where('id = ?', $reservation_id)->exists());
+        return !(Reservation::where('id ', $reservation_id)->exists());
     }
 
     public  function isAllReadyExist($sheet_id, $schedule_id)

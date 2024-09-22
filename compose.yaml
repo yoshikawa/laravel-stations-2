@@ -33,7 +33,7 @@ services:
 
     yarn_installation:
         container_name: laravel-stations-2-yarn-installation
-        image: node:17.9.0
+        image: node:22-bookworm
         volumes:
           - ./:/app
         entrypoint:

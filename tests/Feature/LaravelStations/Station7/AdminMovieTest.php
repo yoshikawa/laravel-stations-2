@@ -5,23 +5,24 @@ namespace Tests\Feature\LaravelStations\Station7;
 use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @group station7
-     */
+    #[Test]
+    #[Group('station7')]
     public function test管理者映画一覧に全ての映画のカラムが表示されているか(): void
     {
         $count = 12;
         for ($i = 0; $i < $count; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要'.$i,
+                'description' => '概要' . $i,
                 'is_showing' => (bool)random_int(0, 1),
             ]);
         }

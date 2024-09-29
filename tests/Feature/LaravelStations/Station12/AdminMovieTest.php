@@ -8,9 +8,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-/**
- * @group station12
- */
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
@@ -21,10 +18,10 @@ class AdminMovieTest extends TestCase
 
         for ($i = 0; $i < 3; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要'.$i,
+                'description' => '概要' . $i,
                 'is_showing' => random_int(0, 1),
                 'genre_id' => $genreId,
             ]);
@@ -167,7 +164,7 @@ class AdminMovieTest extends TestCase
     public function test管理者映画編集画面が表示される(): void
     {
         $movie = $this->createMovie();
-        $response = $this->get('/admin/movies/'.$movie->id.'/edit');
+        $response = $this->get('/admin/movies/' . $movie->id . '/edit');
         $response->assertStatus(200);
         $response->assertSee($movie->title);
         $response->assertSee($movie->image_url);
@@ -190,7 +187,7 @@ class AdminMovieTest extends TestCase
             'genre' => $genreName,
         ];
 
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $input);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $input);
         $response->assertStatus(302);
 
         $this->assertDatabaseHas('movies', [
@@ -216,7 +213,7 @@ class AdminMovieTest extends TestCase
             'genre' => Genre::find($movie->genre_id)->name,
         ];
 
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $input);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $input);
         $response->assertStatus(302);
 
         $this->assertDatabaseHas('movies', [
@@ -242,7 +239,7 @@ class AdminMovieTest extends TestCase
             'genre' => '新規ジャンル',
         ];
 
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $input);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $input);
 
         $response->assertStatus(500);
         $this->assertDatabaseMissing('movies', ['title' => $input['title']]);
@@ -260,7 +257,7 @@ class AdminMovieTest extends TestCase
             'is_showing' => null,
             'genre' => null,
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $response->assertInvalid(['title', 'image_url', 'published_year', 'description', 'is_showing', 'genre']);
     }
@@ -275,7 +272,7 @@ class AdminMovieTest extends TestCase
             'description' => "概要\n概要\n",
             'is_showing' => (bool)random_int(0, 1),
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $response->assertInvalid(['image_url']);
     }
@@ -302,7 +299,7 @@ class AdminMovieTest extends TestCase
             'is_showing' => (bool)random_int(0, 1),
             'genre' => $genre->name,
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $response->assertInvalid(['title']);
     }
@@ -346,7 +343,7 @@ class AdminMovieTest extends TestCase
     {
         $movie = $this->createMovie();
         $this->assertMovieCount(1);
-        $response = $this->delete('/admin/movies/'.$movie->id.'/destroy');
+        $response = $this->delete('/admin/movies/' . $movie->id . '/destroy');
         $response->assertStatus(302);
         $this->assertMovieCount(0);
     }

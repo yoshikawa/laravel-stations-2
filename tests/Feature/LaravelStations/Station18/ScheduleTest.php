@@ -9,14 +9,16 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group station18
- */
 class ScheduleTest extends TestCase
 {
     use RefreshDatabase;
 
+    #[Test]
+    #[Group('station18')]
     public function test映画詳細ページが表示される(): void
     {
         $movie = $this->createMovie();
@@ -28,6 +30,8 @@ class ScheduleTest extends TestCase
         $response->assertSeeText($movie->description);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test映画スケジュールのリレーションが存在する(): void
     {
         $movie = $this->createMovie();
@@ -37,6 +41,8 @@ class ScheduleTest extends TestCase
         $this->assertCount(10, $movie->schedules);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test映画詳細ページに紐づくスケジュールが表示される(): void
     {
         $movie = $this->createMovie();
@@ -52,6 +58,8 @@ class ScheduleTest extends TestCase
         }
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test映画詳細ページに座席を予約するボタンが表示されている(): void
     {
         $movie = $this->createMovie();
@@ -65,6 +73,8 @@ class ScheduleTest extends TestCase
         $response->assertSeeText('座席を予約する');
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test上映スケジュールが上映開始時刻の昇順である(): void
     {
         $movieId = $this->createMovie()->id;

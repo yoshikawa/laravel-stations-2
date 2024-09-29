@@ -27,5 +27,4 @@ class PracticeTest extends TestCase
             $response->assertSeeText($practice->title);
         }
     }
-
 }

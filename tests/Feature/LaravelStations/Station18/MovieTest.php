@@ -6,24 +6,26 @@ use App\Models\Genre;
 use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group station18
- */
 class MovieTest extends TestCase
 {
     use RefreshDatabase;
 
+    #[Test]
+    #[Group('station19')]
     public function test映画一覧に全ての映画のタイトル、画像urlが表示される(): void
     {
         $genreId = Genre::insertGetId(['name' => 'ジャンル']);
 
         for ($i = 0; $i < 3; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要'.$i,
+                'description' => '概要' . $i,
                 'is_showing' => (bool)random_int(0, 1),
                 'genre_id' => $genreId,
             ]);
@@ -37,15 +39,17 @@ class MovieTest extends TestCase
         }
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test映画一覧で検索ができる(): void
     {
         $genreId = Genre::insertGetId(['name' => 'ジャンル']);
         for ($i = 0; $i < 10; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要概要概要'.$i,
+                'description' => '概要概要概要' . $i,
                 'is_showing' => 1,
                 'genre_id' => $genreId,
             ]);
@@ -106,15 +110,14 @@ class MovieTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider dataProvider_ページに対応する映画タイトル
-     */
+    #[Test]
+    #[Group('station19')]
+    #[DataProvider('dataProvider_ページに対応する映画タイトル')]
     public function test_1ページあたり20件ずつのページネーションが動いている(
         int $page,
         array $includes,
         array $excludes,
-    ): void
-    {
+    ): void {
         $genreId = Genre::insertGetId(['name' => 'ジャンル']);
 
         foreach (range(0, 20) as $value) {
@@ -133,10 +136,10 @@ class MovieTest extends TestCase
         $response->assertDontSee($excludes);
     }
 
-    public function dataProvider_ページに対応する映画タイトル(): array
+    public static function dataProvider_ページに対応する映画タイトル(): array
     {
         return [
-            '1ページ目(20件表示)指定時' =>[
+            '1ページ目(20件表示)指定時' => [
                 'page' => 1,
                 'includes' => ['タイトル0', 'タイトル19'],
                 'excludes' => ['タイトル20'],
@@ -146,7 +149,7 @@ class MovieTest extends TestCase
                 'includes' => ['タイトル20'],
                 'excludes' => ['タイトル19'],
             ],
-            '存在しないページ指定時' =>[
+            '存在しないページ指定時' => [
                 'page' => 0,
                 'includes' => ['タイトル0', 'タイトル19'],
                 'excludes' => ['タイトル20'],

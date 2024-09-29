@@ -10,10 +10,9 @@ use App\Models\Sheet;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group station18
- */
 class SheetTest extends TestCase
 {
     use RefreshDatabase;
@@ -24,53 +23,67 @@ class SheetTest extends TestCase
         $this->seed();
     }
 
+    #[Test]
+    #[Group('station18')]
     public function testSeedコマンドでマスターデータが作成されるか(): void
     {
         $this->assertEquals(Sheet::count(), 15);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test座席一覧画面に全ての座席が表示されるか(): void
     {
         $response = $this->get('/sheets');
         $response->assertStatus(200);
         $sheets = Sheet::all();
         foreach ($sheets as $sheet) {
-            $response->assertSeeText($sheet->row .'-'. $sheet->column);
+            $response->assertSeeText($sheet->row . '-' . $sheet->column);
         }
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test座席予約画面が表示されるか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/sheets?date='.CarbonImmutable::now());
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/sheets?date=' . CarbonImmutable::now());
         $response->assertStatus(200);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test座席予約画面がエラー時400を返すか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/sheets');
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/sheets');
         $response->assertStatus(400);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test予約ページが表示されるか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/reservations/create?date='.CarbonImmutable::now().'&sheetId='.Sheet::first()->id);
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/reservations/create?date=' . CarbonImmutable::now() . '&sheetId=' . Sheet::first()->id);
         $response->assertStatus(200);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test予約ページがエラー時400を返すか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/reservations/create');
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/reservations/create');
         $response->assertStatus(400);
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/reservations/create?date='.CarbonImmutable::now());
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/reservations/create?date=' . CarbonImmutable::now());
         $response->assertStatus(400);
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/reservations/create?sheetId='.Sheet::first()->id);
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/reservations/create?sheetId=' . Sheet::first()->id);
         $response->assertStatus(400);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test予約を保存できるかどうか(): void
     {
         $this->assertReservationCount(0);
@@ -86,6 +99,8 @@ class SheetTest extends TestCase
         $this->assertReservationCount(1);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test予約のバリデーションチェック(): void
     {
         $this->assertReservationCount(0);
@@ -102,6 +117,8 @@ class SheetTest extends TestCase
         $this->assertReservationCount(0);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test予約重複時時エラーを返す(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -124,6 +141,8 @@ class SheetTest extends TestCase
         $this->assertReservationCount(1);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function testDBのUnique制限がかかっているかどうか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -150,6 +169,8 @@ class SheetTest extends TestCase
         $this->assertReservationCount(1);
     }
 
+    #[Test]
+    #[Group('station18')]
     public function test既に存在する予約の場合予約ページが400となるか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -160,7 +181,7 @@ class SheetTest extends TestCase
             'email' => 'sample@techbowl.com',
             'name' => 'サンプルユーザー',
         ]);
-        $response = $this->get('/movies/'.$movieId.'/schedules/'.$scheduleId.'/reservations/create?date='.CarbonImmutable::now().'&sheetId='.Sheet::first()->id);
+        $response = $this->get('/movies/' . $movieId . '/schedules/' . $scheduleId . '/reservations/create?date=' . CarbonImmutable::now() . '&sheetId=' . Sheet::first()->id);
         $response->assertStatus(400);
     }
 

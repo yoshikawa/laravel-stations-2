@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call([
-        //     SheetTableSeeder::class,
-        // ]);
+        $this->call([
+            // ここに Seeder を追加する
+        ]);
     }
 }

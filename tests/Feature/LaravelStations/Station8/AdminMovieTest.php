@@ -5,23 +5,24 @@ namespace Tests\Feature\LaravelStations\Station8;
 use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @group station8
-     */
+    #[Test]
+    #[Group('station8')]
     public function test管理者映画一覧に全ての映画のカラムが表示されているか(): void
     {
         $count = 12;
         for ($i = 0; $i < $count; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要'.$i,
+                'description' => '概要' . $i,
                 'is_showing' => (bool)random_int(0, 1),
             ]);
         }
@@ -43,12 +44,16 @@ class AdminMovieTest extends TestCase
         $response->assertDontSee('false');
     }
 
+    #[Test]
+    #[Group('station8')]
     public function test管理者映画作成画面が表示されているか(): void
     {
         $response = $this->get('/admin/movies/create');
         $response->assertStatus(200);
     }
 
+    #[Test]
+    #[Group('station8')]
     public function test管理者映画作成画面で映画が作成されるか(): void
     {
         $this->assertMovieCount(0);
@@ -63,6 +68,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(1);
     }
 
+    #[Test]
+    #[Group('station8')]
     public function testRequiredバリデーションが設定されているか(): void
     {
         $this->assertMovieCount(0);
@@ -78,6 +85,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
+    #[Test]
+    #[Group('station8')]
     public function test画像URLバリデーションが設定されているか(): void
     {
         $this->assertMovieCount(0);
@@ -93,6 +102,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
+    #[Test]
+    #[Group('station8')]
     public function test映画タイトルの重複バリデーションが設定されているか(): void
     {
         Movie::insert([
@@ -115,6 +126,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(1);
     }
 
+    #[Test]
+    #[Group('station8')]
     private function assertMovieCount(int $count): void
     {
         $movieCount = Movie::count();

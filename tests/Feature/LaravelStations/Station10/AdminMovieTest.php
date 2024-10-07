@@ -5,23 +5,24 @@ namespace Tests\Feature\LaravelStations\Station10;
 use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @group station10
-     */
+    #[Test]
+    #[Group('station10')]
     public function test管理者映画一覧に全ての映画のカラムが表示されているか(): void
     {
         $count = 12;
         for ($i = 0; $i < $count; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要'.$i,
+                'description' => '概要' . $i,
                 'is_showing' => (bool)random_int(0, 1),
             ]);
         }
@@ -43,12 +44,16 @@ class AdminMovieTest extends TestCase
         $response->assertDontSee('false');
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test管理者映画作成画面が表示されているか(): void
     {
         $response = $this->get('/admin/movies/create');
         $response->assertStatus(200);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test管理者映画作成画面で映画が作成されるか(): void
     {
         $this->assertMovieCount(0);
@@ -63,6 +68,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(1);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function testRequiredバリデーションが設定されているか(): void
     {
         $this->assertMovieCount(0);
@@ -78,6 +85,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test画像URLバリデーションが設定されているか(): void
     {
         $this->assertMovieCount(0);
@@ -93,6 +102,8 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test映画タイトルの重複バリデーションが設定されているか(): void
     {
         Movie::insert([
@@ -115,16 +126,20 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(1);
     }
 
+    #[Test]
+    #[Group('station10')]
     private function assertMovieCount(int $count): void
     {
         $movieCount = Movie::count();
         $this->assertEquals($movieCount, $count);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test管理者映画編集画面が表示されているか(): void
     {
         $movie = $this->createMovie();
-        $response = $this->get('/admin/movies/'.$movie->id.'/edit');
+        $response = $this->get('/admin/movies/' . $movie->id . '/edit');
         $response->assertStatus(200);
         $response->assertSee($movie->title);
         $response->assertSee($movie->image_url);
@@ -133,6 +148,8 @@ class AdminMovieTest extends TestCase
         $response->assertSee('is_showing'); // Checkboxの存在を確認する代わりにプロパティ名がHTMLに含まれているかどうかだけチェックする
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test管理者映画編集画面で映画が更新されるか(): void
     {
         $movie = $this->createMovie();
@@ -143,7 +160,7 @@ class AdminMovieTest extends TestCase
             'description' => '更新された概要',
             'is_showing' => true
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $updated = Movie::find($movie->id);
         $this->assertEquals($updated->title, $data['title']);
@@ -153,6 +170,8 @@ class AdminMovieTest extends TestCase
         $this->assertEquals($updated->is_showing, $data['is_showing']);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test更新時Requiredバリデーションが設定されているか(): void
     {
         $movie = $this->createMovie();
@@ -163,11 +182,13 @@ class AdminMovieTest extends TestCase
             'description' => '',
             'is_showing' => null
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $response->assertInvalid(['title', 'image_url', 'published_year', 'description', 'is_showing']);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test更新時画像URLバリデーションが設定されているか(): void
     {
         $movie = $this->createMovie();
@@ -178,11 +199,13 @@ class AdminMovieTest extends TestCase
             'description' => "概要\n概要\n",
             'is_showing' => (bool)random_int(0, 1),
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $response->assertInvalid(['image_url']);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test更新時映画タイトルの重複バリデーションが設定されているか(): void
     {
         Movie::insert([
@@ -200,11 +223,13 @@ class AdminMovieTest extends TestCase
             'description' => "概要\n概要\n",
             'is_showing' => (bool)random_int(0, 1),
         ];
-        $response = $this->patch('/admin/movies/'.$movie->id.'/update', $data);
+        $response = $this->patch('/admin/movies/' . $movie->id . '/update', $data);
         $response->assertStatus(302);
         $response->assertInvalid(['title']);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function testテーブルにMovieTitleのユニークキーが入っているか(): void
     {
         Movie::insert([
@@ -229,6 +254,8 @@ class AdminMovieTest extends TestCase
         }
     }
 
+    #[Test]
+    #[Group('station10')]
     private function createMovie(): Movie
     {
         $movieId = Movie::insertGetId([
@@ -241,15 +268,19 @@ class AdminMovieTest extends TestCase
         return Movie::find($movieId);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test映画を削除できるか(): void
     {
         $movie = $this->createMovie();
         $this->assertMovieCount(1);
-        $response = $this->delete('/admin/movies/'.$movie->id.'/destroy');
+        $response = $this->delete('/admin/movies/' . $movie->id . '/destroy');
         $response->assertStatus(302);
         $this->assertMovieCount(0);
     }
 
+    #[Test]
+    #[Group('station10')]
     public function test削除対象が存在しない時404が返るか(): void
     {
         $response = $this->delete('/admin/movies/1/destroy');

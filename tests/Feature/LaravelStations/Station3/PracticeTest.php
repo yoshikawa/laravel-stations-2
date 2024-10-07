@@ -4,12 +4,13 @@ namespace Tests\Feature\LaravelStations\Station3;
 
 use App\Http\Controllers\PracticeController;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class PracticeTest extends TestCase
 {
-    /**
-     * @group station3
-     */
+    #[Test]
+    #[Group('station3')]
     public function testPracticeが練習という文字列を返すか(): void
     {
         $response = $this->get('/practice');
@@ -17,9 +18,8 @@ class PracticeTest extends TestCase
         $response->assertSeeText('練習');
     }
 
-    /**
-     * @group station3
-     */
+    #[Test]
+    #[Group('station3')]
     public function testPractice2がtestParamという変数を返すか(): void
     {
         $controller = new PracticeController();
@@ -27,9 +27,8 @@ class PracticeTest extends TestCase
         $this->assertArrayHasKey('testParam', $response->getData());
     }
 
-    /**
-     * @group station3
-     */
+    #[Test]
+    #[Group('station3')]
     public function testPractice3がtestParamという変数を返すか(): void
     {
         $controller = new PracticeController();

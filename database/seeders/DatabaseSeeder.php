@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            SheetTableSeeder::class,
+            // ここに Seeder を追加する
         ]);
     }
 }

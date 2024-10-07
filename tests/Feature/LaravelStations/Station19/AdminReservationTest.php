@@ -10,10 +10,9 @@ use App\Models\Schedule;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group station19
- */
 class AdminReservationTest extends TestCase
 {
     use RefreshDatabase;
@@ -28,10 +27,12 @@ class AdminReservationTest extends TestCase
         $this->genreId = Genre::insertGetId(['name' => 'ジャンル']);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test管理者予約一覧が表示されているか(): void
     {
         for ($i = 0; $i < 3; $i++) {
-            $movieId = $this->createMovie('タイトル'.$i)->id;
+            $movieId = $this->createMovie('タイトル' . $i)->id;
             Reservation::insert([
                 'date' => new CarbonImmutable('2050-01-01'),
                 'schedule_id' => Schedule::insertGetId([
@@ -52,15 +53,17 @@ class AdminReservationTest extends TestCase
             $response->assertSee($reservation->date);
             $response->assertSee($reservation->name);
             $response->assertSee($reservation->email);
-            $response->assertSee(strtoupper($reservation->sheet->row.$reservation->sheet->column));
+            $response->assertSee(strtoupper($reservation->sheet->row . $reservation->sheet->column));
         }
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test管理者予約一覧で上映終了の映画が非表示となっているか(): void
     {
         $count = 12;
         for ($i = 0; $i < $count; $i++) {
-            $movieId = $this->createMovie('タイトル'.$i)->id;
+            $movieId = $this->createMovie('タイトル' . $i)->id;
             Reservation::insert([
                 'date' => new CarbonImmutable('2020-01-01'),
                 'schedule_id' => Schedule::insertGetId([
@@ -81,16 +84,20 @@ class AdminReservationTest extends TestCase
             $response->assertDontSee($reservation->date);
             $response->assertDontSee($reservation->name);
             $response->assertDontSee($reservation->email);
-            $response->assertDontSee(strtoupper($reservation->sheet->row.$reservation->sheet->column));
+            $response->assertDontSee(strtoupper($reservation->sheet->row . $reservation->sheet->column));
         }
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test管理者予約作成画面が表示されているか(): void
     {
         $response = $this->get('/admin/reservations/create');
         $response->assertStatus(200);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test管理者予約作成画面で予約が作成されるか(): void
     {
         $this->assertReservationCount(0);
@@ -108,6 +115,8 @@ class AdminReservationTest extends TestCase
         $this->assertReservationCount(1);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function testRequiredバリデーションが設定されているか(): void
     {
         $this->assertReservationCount(0);
@@ -129,6 +138,8 @@ class AdminReservationTest extends TestCase
         $this->assertEquals($reservationCount, $count);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test管理者映集予約画面が表示されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -140,10 +151,12 @@ class AdminReservationTest extends TestCase
             'email' => 'sample@exmaple.com',
             'name' => 'サンプル太郎',
         ]);
-        $response = $this->get('/admin/reservations/'.$reservationId.'/edit');
+        $response = $this->get('/admin/reservations/' . $reservationId . '/edit');
         $response->assertStatus(200);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test管理者予約編集画面で映画予約が更新されるか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -155,7 +168,7 @@ class AdminReservationTest extends TestCase
             'email' => 'sample@exmaple.com',
             'name' => 'サンプル太郎',
         ]);
-        $response = $this->patch('/admin/reservations/'.$reservationId, [
+        $response = $this->patch('/admin/reservations/' . $reservationId, [
             'movie_id' => $movieId,
             'schedule_id' => $scheduleId,
             'sheet_id' => 2,
@@ -169,6 +182,8 @@ class AdminReservationTest extends TestCase
         $this->assertEquals($updated->sheet_id, 2);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test更新時Requiredバリデーションが設定されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -180,7 +195,7 @@ class AdminReservationTest extends TestCase
             'email' => 'sample@exmaple.com',
             'name' => 'サンプル太郎',
         ]);
-        $response = $this->patch('/admin/reservations/'.$reservationId, [
+        $response = $this->patch('/admin/reservations/' . $reservationId, [
             'movie_id' => null,
             'schedule_id' => null,
             'sheet_id' => null,
@@ -198,7 +213,7 @@ class AdminReservationTest extends TestCase
             'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
             'published_year' => 2000,
             'description' => '概要',
-            'is_showing' => rand(0,1),
+            'is_showing' => rand(0, 1),
             'genre_id' => $this->genreId,
         ]);
         return Movie::find($movieId);
@@ -214,6 +229,8 @@ class AdminReservationTest extends TestCase
         return Schedule::find($scheduleId);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test予約を削除できるか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -226,11 +243,13 @@ class AdminReservationTest extends TestCase
             'name' => 'サンプル太郎',
         ]);
         $this->assertReservationCount(1);
-        $response = $this->delete('/admin/reservations/'.$reservationId);
+        $response = $this->delete('/admin/reservations/' . $reservationId);
         $response->assertStatus(302);
         $this->assertReservationCount(0);
     }
 
+    #[Test]
+    #[Group('station19')]
     public function test削除対象が存在しない時404が返るか(): void
     {
         $response = $this->delete('/admin/reservations/1');

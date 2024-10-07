@@ -5,23 +5,25 @@ namespace Tests\Feature\LaravelStations\Station11;
 use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group station11
- */
 class MovieTest extends TestCase
 {
     use RefreshDatabase;
 
+    #[Test]
+    #[Group('station11')]
     public function test映画一覧に全ての映画のタイトル、画像URLが表示されているか(): void
     {
         $count = 12;
         for ($i = 0; $i < $count; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要'.$i,
+                'description' => '概要' . $i,
                 'is_showing' => (bool)random_int(0, 1),
             ]);
         }
@@ -34,15 +36,17 @@ class MovieTest extends TestCase
         }
     }
 
+    #[Test]
+    #[Group('station11')]
     public function test映画一覧で検索ができるか(): void
     {
         $count = 12;
         for ($i = 0; $i < $count; $i++) {
             Movie::insert([
-                'title' => 'タイトル'.$i,
+                'title' => 'タイトル' . $i,
                 'image_url' => 'https://techbowl.co.jp/_nuxt/img/6074f79.png',
                 'published_year' => 2000 + $i,
-                'description' => '概要概要概要'.$i,
+                'description' => '概要概要概要' . $i,
                 'is_showing' => 1,
             ]);
         }
@@ -100,15 +104,14 @@ class MovieTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider dataProvider_ページに対応する映画タイトル
-     */
+    #[Test]
+    #[Group('station11')]
+    #[DataProvider('dataProvider_ページに対応する映画タイトル')]
     public function test_1ページあたり20件ずつのページネーションが動いている(
         int $page,
         array $includes,
         array $excludes,
-    ): void
-    {
+    ): void {
         foreach (range(0, 20) as $value) {
             Movie::insert([
                 'title' => 'タイトル' . $value,
@@ -124,10 +127,10 @@ class MovieTest extends TestCase
         $response->assertDontSee($excludes);
     }
 
-    public function dataProvider_ページに対応する映画タイトル(): array
+    public static function dataProvider_ページに対応する映画タイトル(): array
     {
         return [
-            '1ページ目(20件表示)指定時' =>[
+            '1ページ目(20件表示)指定時' => [
                 'page' => 1,
                 'includes' => ['タイトル0', 'タイトル19'],
                 'excludes' => ['タイトル20'],
@@ -137,7 +140,7 @@ class MovieTest extends TestCase
                 'includes' => ['タイトル20'],
                 'excludes' => ['タイトル19'],
             ],
-            '存在しないページ指定時' =>[
+            '存在しないページ指定時' => [
                 'page' => 0,
                 'includes' => ['タイトル0', 'タイトル19'],
                 'excludes' => ['タイトル20'],

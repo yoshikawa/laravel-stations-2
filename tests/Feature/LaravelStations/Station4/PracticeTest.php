@@ -5,12 +5,10 @@ namespace Tests\Feature\LaravelStations\Station4;
 use Mockery;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station4')]
 class PracticeTest extends TestCase
 {
-    #[Test]
-    #[Group('station4')]
     public function testGetPracticeがPracticeallを実行しているか(): void
     {
         $mock = Mockery::mock('overload:App\Practice');

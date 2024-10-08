@@ -6,14 +6,12 @@ use App\Practice;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station5')]
 class PracticeTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station5')]
     public function testGetPracticeが全てのPracticeを返しているか(): void
     {
         for ($i = 0; $i < 11; $i++) {

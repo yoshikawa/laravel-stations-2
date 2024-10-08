@@ -8,14 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station15')]
 class MovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station15')]
+
     public function test映画一覧に全ての映画のタイトル、画像urlが表示される(): void
     {
         $genreId = Genre::insertGetId(['name' => 'ジャンル']);
@@ -39,8 +38,6 @@ class MovieTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station15')]
     public function test映画一覧で検索ができる(): void
     {
         $genreId = Genre::insertGetId(['name' => 'ジャンル']);
@@ -110,8 +107,6 @@ class MovieTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station15')]
     #[DataProvider('dataProvider_ページに対応する映画タイトル')]
     public function test_1ページあたり20件ずつのページネーションが動いている(
         int $page,

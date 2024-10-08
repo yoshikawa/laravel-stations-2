@@ -5,12 +5,10 @@ namespace Tests\Feature\LaravelStations\Station2;
 use App\Http\Controllers\PracticeController;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station2')]
 class PracticeTest extends TestCase
 {
-    #[Test]
-    #[Group('station2')]
     public function testPracticeが表示されるか(): void
     {
         $response = $this->get('/practice');
@@ -18,8 +16,6 @@ class PracticeTest extends TestCase
         $response->assertSeeText('practice');
     }
 
-    #[Test]
-    #[Group('station2')]
     public function testPractice2が表示されるか(): void
     {
         $response = $this->get('/practice2');
@@ -27,8 +23,6 @@ class PracticeTest extends TestCase
         $response->assertSeeText('practice2');
     }
 
-    #[Test]
-    #[Group('station2')]
     public function testPractice3が表示されるか(): void
     {
         $response = $this->get('/practice3');
@@ -36,8 +30,6 @@ class PracticeTest extends TestCase
         $response->assertSeeText('test');
     }
 
-    #[Test]
-    #[Group('station2')]
     public function testSampleメソッドが存在するか()
     {
         $controller = new PracticeController();
@@ -45,8 +37,6 @@ class PracticeTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    #[Test]
-    #[Group('station2')]
     public function testSample2メソッドが存在するか()
     {
         $controller = new PracticeController();
@@ -54,8 +44,6 @@ class PracticeTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    #[Test]
-    #[Group('station2')]
     public function testSample3メソッドが存在するか()
     {
         $controller = new PracticeController();

@@ -6,14 +6,12 @@ use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station7')]
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station7')]
     public function test管理者映画一覧に全ての映画のカラムが表示されているか(): void
     {
         $count = 12;

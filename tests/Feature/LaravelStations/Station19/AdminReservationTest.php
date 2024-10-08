@@ -11,8 +11,8 @@ use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station19')]
 class AdminReservationTest extends TestCase
 {
     use RefreshDatabase;
@@ -27,8 +27,6 @@ class AdminReservationTest extends TestCase
         $this->genreId = Genre::insertGetId(['name' => 'ジャンル']);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test管理者予約一覧が表示されているか(): void
     {
         for ($i = 0; $i < 3; $i++) {
@@ -57,8 +55,6 @@ class AdminReservationTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test管理者予約一覧で上映終了の映画が非表示となっているか(): void
     {
         $count = 12;
@@ -88,16 +84,12 @@ class AdminReservationTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test管理者予約作成画面が表示されているか(): void
     {
         $response = $this->get('/admin/reservations/create');
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test管理者予約作成画面で予約が作成されるか(): void
     {
         $this->assertReservationCount(0);
@@ -115,8 +107,6 @@ class AdminReservationTest extends TestCase
         $this->assertReservationCount(1);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function testRequiredバリデーションが設定されているか(): void
     {
         $this->assertReservationCount(0);
@@ -138,8 +128,6 @@ class AdminReservationTest extends TestCase
         $this->assertEquals($reservationCount, $count);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test管理者映集予約画面が表示されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -155,8 +143,6 @@ class AdminReservationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test管理者予約編集画面で映画予約が更新されるか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -182,8 +168,6 @@ class AdminReservationTest extends TestCase
         $this->assertEquals($updated->sheet_id, 2);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test更新時Requiredバリデーションが設定されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -229,8 +213,6 @@ class AdminReservationTest extends TestCase
         return Schedule::find($scheduleId);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test予約を削除できるか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -248,8 +230,6 @@ class AdminReservationTest extends TestCase
         $this->assertReservationCount(0);
     }
 
-    #[Test]
-    #[Group('station19')]
     public function test削除対象が存在しない時404が返るか(): void
     {
         $response = $this->delete('/admin/reservations/1');

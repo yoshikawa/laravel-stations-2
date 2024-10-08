@@ -6,14 +6,13 @@ use App\Models\Movie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station8')]
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station8')]
+
     public function test管理者映画一覧に全ての映画のカラムが表示されているか(): void
     {
         $count = 12;
@@ -44,16 +43,12 @@ class AdminMovieTest extends TestCase
         $response->assertDontSee('false');
     }
 
-    #[Test]
-    #[Group('station8')]
     public function test管理者映画作成画面が表示されているか(): void
     {
         $response = $this->get('/admin/movies/create');
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station8')]
     public function test管理者映画作成画面で映画が作成されるか(): void
     {
         $this->assertMovieCount(0);
@@ -68,8 +63,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(1);
     }
 
-    #[Test]
-    #[Group('station8')]
     public function testRequiredバリデーションが設定されているか(): void
     {
         $this->assertMovieCount(0);
@@ -85,8 +78,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
-    #[Test]
-    #[Group('station8')]
     public function test画像URLバリデーションが設定されているか(): void
     {
         $this->assertMovieCount(0);
@@ -102,8 +93,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
-    #[Test]
-    #[Group('station8')]
     public function test映画タイトルの重複バリデーションが設定されているか(): void
     {
         Movie::insert([
@@ -126,8 +115,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(1);
     }
 
-    #[Test]
-    #[Group('station8')]
     private function assertMovieCount(int $count): void
     {
         $movieCount = Movie::count();

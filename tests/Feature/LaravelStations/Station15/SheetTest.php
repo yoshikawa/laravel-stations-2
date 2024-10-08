@@ -6,22 +6,18 @@ use App\Models\Sheet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station15')]
 class SheetTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station15')]
     public function testSeedコマンドでマスターデータが作成されるか(): void
     {
         $this->seed();
         $this->assertEquals(Sheet::count(), 15);
     }
 
-    #[Test]
-    #[Group('station15')]
     public function test座席一覧画面に全ての座席が表示されるか(): void
     {
         $this->seed();

@@ -10,8 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station16')]
 class AdminScheduleTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,8 +25,6 @@ class AdminScheduleTest extends TestCase
         $this->genreId = Genre::insertGetId(['name' => 'ジャンル']);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画詳細にスケジュール一覧が表示されているか(): void
     {
         for ($i = 0; $i < 3; $i++) {
@@ -61,8 +59,6 @@ class AdminScheduleTest extends TestCase
         $response->assertDontSee('false');
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画スケジュール作成画面が表示されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -70,8 +66,6 @@ class AdminScheduleTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画スケジュール作成画面でスケジュールが作成されるか(): void
     {
         $startTime = new CarbonImmutable('2022-01-01 00:00:00');
@@ -89,8 +83,6 @@ class AdminScheduleTest extends TestCase
         $this->assertScheduleCount(1);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function testRequiredバリデーションが設定されているか(): void
     {
         $this->assertScheduleCount(0);
@@ -107,8 +99,6 @@ class AdminScheduleTest extends TestCase
         $this->assertScheduleCount(0);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test日時フォーマットのバリデーションが設定されているか(): void
     {
         $this->assertScheduleCount(0);
@@ -125,8 +115,6 @@ class AdminScheduleTest extends TestCase
         $this->assertScheduleCount(0);
     }
 
-    #[Test]
-    #[Group('station16')]
     #[DataProvider('dataProvider_開始時刻と終了時刻の関係バリデーションチェック')]
     public function test新規登録時_開始時刻と終了時刻に矛盾がある場合バリデーションで弾く(array $input, array $expected): void
     {
@@ -148,8 +136,6 @@ class AdminScheduleTest extends TestCase
         $this->assertEquals($scheduleCount, $count);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画編スケジュール集画面が表示されているか(): void
     {
         $startTime = new CarbonImmutable('2022-01-01 00:00:00');
@@ -164,8 +150,6 @@ class AdminScheduleTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画スケジュール編集画面で映画スケジュールが更新されるか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -189,8 +173,6 @@ class AdminScheduleTest extends TestCase
         $this->assertEquals($updated->end_time, $endTime->addHours(2));
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test更新時Requiredバリデーションが設定されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -212,8 +194,6 @@ class AdminScheduleTest extends TestCase
         $response->assertInvalid(['movie_id', 'start_time_date', 'start_time_time', 'end_time_date', 'end_time_time']);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test更新時日時フォーマットのバリデーションが設定されているか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -235,8 +215,6 @@ class AdminScheduleTest extends TestCase
         $response->assertInvalid(['start_time_date', 'start_time_time', 'end_time_date', 'end_time_time']);
     }
 
-    #[Test]
-    #[Group('station16')]
     #[DataProvider('dataProvider_開始時刻と終了時刻の関係バリデーションチェック')]
     public function test更新時_開始時刻と終了時刻に矛盾がある場合バリデーションで弾く(array $input, array $expected): void
     {
@@ -307,8 +285,6 @@ class AdminScheduleTest extends TestCase
         return Movie::find($movieId);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function testスケジュールを削除できるか(): void
     {
         $movieId = $this->createMovie('タイトル')->id;
@@ -325,8 +301,6 @@ class AdminScheduleTest extends TestCase
         $this->assertScheduleCount(0);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test削除対象が存在しない時404が返るか(): void
     {
         $response = $this->delete('/admin/schedules/1/destroy');

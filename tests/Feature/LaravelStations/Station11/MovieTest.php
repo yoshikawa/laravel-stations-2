@@ -7,14 +7,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station11')]
 class MovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station11')]
     public function test映画一覧に全ての映画のタイトル、画像URLが表示されているか(): void
     {
         $count = 12;
@@ -36,8 +34,6 @@ class MovieTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station11')]
     public function test映画一覧で検索ができるか(): void
     {
         $count = 12;
@@ -104,8 +100,6 @@ class MovieTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station11')]
     #[DataProvider('dataProvider_ページに対応する映画タイトル')]
     public function test_1ページあたり20件ずつのページネーションが動いている(
         int $page,

@@ -11,8 +11,8 @@ use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station18')]
 class SheetTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,15 +23,11 @@ class SheetTest extends TestCase
         $this->seed();
     }
 
-    #[Test]
-    #[Group('station18')]
     public function testSeedコマンドでマスターデータが作成されるか(): void
     {
         $this->assertEquals(Sheet::count(), 15);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test座席一覧画面に全ての座席が表示されるか(): void
     {
         $response = $this->get('/sheets');
@@ -42,8 +38,6 @@ class SheetTest extends TestCase
         }
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test座席予約画面が表示されるか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -51,8 +45,6 @@ class SheetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test座席予約画面がエラー時400を返すか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -60,8 +52,6 @@ class SheetTest extends TestCase
         $response->assertStatus(400);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test予約ページが表示されるか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -69,8 +59,6 @@ class SheetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test予約ページがエラー時400を返すか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -82,8 +70,6 @@ class SheetTest extends TestCase
         $response->assertStatus(400);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test予約を保存できるかどうか(): void
     {
         $this->assertReservationCount(0);
@@ -99,8 +85,6 @@ class SheetTest extends TestCase
         $this->assertReservationCount(1);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test予約のバリデーションチェック(): void
     {
         $this->assertReservationCount(0);
@@ -117,8 +101,6 @@ class SheetTest extends TestCase
         $this->assertReservationCount(0);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test予約重複時時エラーを返す(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -141,8 +123,6 @@ class SheetTest extends TestCase
         $this->assertReservationCount(1);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function testDBのUnique制限がかかっているかどうか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();
@@ -169,8 +149,6 @@ class SheetTest extends TestCase
         $this->assertReservationCount(1);
     }
 
-    #[Test]
-    #[Group('station18')]
     public function test既に存在する予約の場合予約ページが400となるか(): void
     {
         [$movieId, $scheduleId] = $this->createMovieAndSchedule();

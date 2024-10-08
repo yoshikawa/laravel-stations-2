@@ -8,14 +8,12 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 
+#[Group('station16')]
 class AdminMovieTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画一覧に全ての映画のカラムが表示されているか(): void
     {
         $genreId = Genre::insertGetId(['name' => 'ジャンル']);
@@ -50,8 +48,6 @@ class AdminMovieTest extends TestCase
         $response->assertDontSee('false');
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画作成画面が表示されているか(): void
     {
         $response = $this->get('/admin/movies/create');
@@ -59,8 +55,6 @@ class AdminMovieTest extends TestCase
         $response->assertStatus(200);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画作成画面で映画が作成される(): void
     {
         $response = $this->post('/admin/movies/store', [
@@ -76,8 +70,6 @@ class AdminMovieTest extends TestCase
         $this->assertDatabaseCount('movies', 1);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test既に登録済みのジャンルでも映画登録が正常終了する(): void
     {
         $genre = Genre::create(['name' => 'ジャンル']);
@@ -100,8 +92,6 @@ class AdminMovieTest extends TestCase
         ]);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test映画登録失敗時にジャンルも未登録になる(): void
     {
         $input = [
@@ -120,8 +110,6 @@ class AdminMovieTest extends TestCase
         $this->assertDatabaseCount('genres', 0);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function testRequiredバリデーションが設定されている(): void
     {
         $this->assertMovieCount(0);
@@ -138,8 +126,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test画像urlバリデーションが設定されている(): void
     {
         $this->assertMovieCount(0);
@@ -155,8 +141,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test映画タイトルの重複バリデーションが設定されているか(): void
     {
         $movie = $this->createMovie();
@@ -179,8 +163,6 @@ class AdminMovieTest extends TestCase
         $this->assertEquals($movieCount, $count);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画編集画面が表示される(): void
     {
         $movie = $this->createMovie();
@@ -194,8 +176,6 @@ class AdminMovieTest extends TestCase
         $response->assertSee($movie->genre->name);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test管理者映画編集画面で映画が更新される(): void
     {
         $movie = $this->createMovie();
@@ -223,8 +203,6 @@ class AdminMovieTest extends TestCase
         ]);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function testジャンル変更なしでも映画更新に成功する(): void
     {
         $movie = $this->createMovie();
@@ -251,8 +229,6 @@ class AdminMovieTest extends TestCase
         ]);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test映画更新失敗時_新規ジャンルは登録されない(): void
     {
         $movie = $this->createMovie();
@@ -272,8 +248,6 @@ class AdminMovieTest extends TestCase
         $this->assertDatabaseMissing('genres', ['name' => $input['genre']]);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test更新時Requiredバリデーションが設定されている(): void
     {
         $movie = $this->createMovie();
@@ -290,8 +264,6 @@ class AdminMovieTest extends TestCase
         $response->assertInvalid(['title', 'image_url', 'published_year', 'description', 'is_showing', 'genre']);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test更新時画像urlバリデーションが設定されているか(): void
     {
         $movie = $this->createMovie();
@@ -307,8 +279,6 @@ class AdminMovieTest extends TestCase
         $response->assertInvalid(['image_url']);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test更新時映画タイトルの重複バリデーションが設定されているか(): void
     {
         $genre = Genre::create(['name' => '既存ジャンル']);
@@ -336,8 +306,6 @@ class AdminMovieTest extends TestCase
         $response->assertInvalid(['title']);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test_moviesテーブルのtitleにユニークキー制約を設定している(): void
     {
         $data = [
@@ -373,8 +341,6 @@ class AdminMovieTest extends TestCase
         return Movie::find($movieId);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test映画を削除できるか(): void
     {
         $movie = $this->createMovie();
@@ -384,8 +350,6 @@ class AdminMovieTest extends TestCase
         $this->assertMovieCount(0);
     }
 
-    #[Test]
-    #[Group('station16')]
     public function test削除対象が存在しない時404が返るか(): void
     {
         $response = $this->delete('/admin/movies/1/destroy');

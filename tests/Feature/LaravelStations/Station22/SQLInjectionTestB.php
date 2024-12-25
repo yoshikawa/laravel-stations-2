@@ -52,7 +52,7 @@ class SQLInjectionTestB extends TestCase
         // ログイン
         $this->actingAs($this->user);
 
-        $injectionKeyword = "' OR 1 = 1; --";
+        $injectionKeyword = "' OR 1 = 1 or '";
 
         $response = $this->get("/movies?keyword=" . urlencode($injectionKeyword));
         $response->assertStatus(200);

@@ -19,6 +19,7 @@ class AuthenticationTest extends TestCase
     private Movie $movie;
     private Schedule $schedule;
     private User $user;
+    private array $routePlaceholders;
 
     protected function setUp(): void
     {
@@ -52,32 +53,70 @@ class AuthenticationTest extends TestCase
             'email' => 'test@techbowl.com',
             'password' => bcrypt('password123'),
         ]);
+
+        $sheet = Sheet::first();
+
+        // プレースホルダーの設定
+        $this->routePlaceholders = [
+            '{movie}' => $this->movie->id,
+            '{schedule}' => $this->schedule->id,
+            '{sheet}' => $sheet->id
+        ];
     }
 
-    public function test未認証時にアクセス制限されるページ一覧(): void
+    /**
+     * @dataProvider unAuthenticatedRouteProvider
+     */
+    public function test非ログイン時に認証が必要なページがアクセス制限され_loginページにリダイレクトされる(string $route): void
     {
-        $routes = [
-            '/movies',
-            '/movies/' . $this->movie->id,
-            '/sheets',
-            '/movies/' . $this->movie->id . '/schedules/' . $this->schedule->id . '/sheets',
-            '/movies/' . $this->movie->id . '/schedules/' . $this->schedule->id . '/reservations/create'
-        ];
+        // プレースホルダーを実際の値に置換
+        $route = strtr($route, $this->routePlaceholders);
 
-        foreach ($routes as $route) {
-            $response = $this->get($route);
-            $response->assertRedirect('/login');
-        }
-
-        $response = $this->post('/reservations/store', [
-            'schedule_id' => $this->schedule->id,
-            'sheet_id' => Sheet::first()->id,
-            'date' => '2024-12-10'
-        ]);
+        $response = $this->get($route);
         $response->assertRedirect('/login');
     }
 
-    public function testユーザー登録画面の表示(): void
+    public function unAuthenticatedRouteProvider(): array
+    {
+        return [
+            '映画一覧ページ' => ['/movies'],
+            '映画詳細ページ' => ['/movies/{movie}'],
+            'シート一覧ページ' => ['/sheets'],
+            'スケジュール別シート一覧ページ' => ['/movies/{movie}/schedules/{schedule}/sheets'],
+            '予約作成ページ' => ['/movies/{movie}/schedules/{schedule}/reservations/create']
+        ];
+    }
+
+    /**
+     * @dataProvider unAuthenticatedPostRouteProvider
+     */
+    public function test非ログイン時に認証が必要なPOSTリクエストがアクセス制限され_loginページにリダイレクトされる(string $route, array $params): void
+    {
+        // プレースホルダーを実際の値に置換
+        $route = strtr($route, $this->routePlaceholders);
+        $params = array_map(function ($value) {
+            return is_string($value) ? strtr($value, $this->routePlaceholders) : $value;
+        }, $params);
+
+        $response = $this->post($route, $params);
+        $response->assertRedirect('/login');
+    }
+
+    public function unAuthenticatedPostRouteProvider(): array
+    {
+        return [
+            '予約保存処理' => [
+                '/reservations/store',
+                [
+                    'schedule_id' => '{schedule}',
+                    'sheet_id' => '{sheet}',
+                    'date' => '2024-12-10'
+                ]
+            ]
+        ];
+    }
+
+    public function testユーザー登録画面が表示され_入力欄がすべて表示されている(): void
     {
         $response = $this->get('/users/create');
         $response->assertStatus(200);
@@ -87,7 +126,7 @@ class AuthenticationTest extends TestCase
         $response->assertSee('password_confirmation');
     }
 
-    public function test空欄があるとユーザー登録できない(): void
+    public function testユーザ情報に空欄がある場合_ユーザ登録されない(): void
     {
         $response = $this->post('/register', [
             'name' => '',
@@ -97,9 +136,13 @@ class AuthenticationTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['name', 'email', 'password']);
         $this->assertDatabaseCount('users', 1); // setUp()で作成した1件のみ
+        $this->assertDatabaseMissing('users', [
+            'name' => '',
+            'email' => ''
+        ]);
     }
 
-    public function test_passwordとpassword_confirmationが一致しない場合_ユーザー登録されない(): void
+    public function test_passwordとpassword_confirmationが一致しない場合_ユーザ登録されない(): void
     {
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -109,12 +152,12 @@ class AuthenticationTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['password']);
         $this->assertDatabaseMissing('users', [
-            'name' => $data['name'],
-            'email' => $data['email']
-        );
+            'name' => 'Test User',
+            'email' => 'test2@techbowl.com'
+        ]);
     }
 
-    public function test正常なユーザー登録(): void
+    public function test正常にユーザ登録ができる(): void
     {
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -123,10 +166,13 @@ class AuthenticationTest extends TestCase
             'password_confirmation' => 'password123'
         ]);
         $this->assertAuthenticated();
-        $this->assertDatabaseCount('users', 2);
+        $this->assertDatabaseHas('users', [
+            'name' => 'Test User',
+            'email' => 'test2@techbowl.com'
+        ]);
     }
 
-    public function test登録したアカウントでログイン可能(): void
+    public function test登録したアカウントでログインすることができる(): void
     {
         $response = $this->post('/login', [
             'email' => 'test@techbowl.com',

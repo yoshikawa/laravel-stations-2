@@ -18,6 +18,13 @@ class SQLInjectionTestB extends TestCase
     {
         parent::setUp();
 
+        // Station22-Aのテストが実行済みであることを確認
+        $filePath = base_path('test-outputs/temp/station22-a.txt');
+        $this->assertTrue(
+            file_exists($filePath),
+            'Station22-Aのテストを先に実行し、SQLインジェクションにより全件取得されることを確認してください'
+        );
+
         // ユーザー作成
         $this->user = User::create([
             'name' => 'Test User',
@@ -40,28 +47,27 @@ class SQLInjectionTestB extends TestCase
         }
     }
 
-    public function testSQLインジェクション対策後の確認(): void
+    public function testSQLインジェクションによる全件取得ができない(): void
     {
-        // Station22-Aのテストが実行済みであることを確認
-        $filePath = base_path('test-outputs/temp/station22-a.txt');
-        $this->assertTrue(
-            file_exists($filePath),
-            'Station22-Aのテストが先に実行されていません'
-        );
 
         // ログイン
         $this->actingAs($this->user);
 
-        $injectionKeyword = "' OR 1 = 1 or '";
+        $injectionKeyword = "' OR 1 = 1; --";
 
         $response = $this->get("/movies?keyword=" . urlencode($injectionKeyword));
         $response->assertStatus(200);
 
         // 全件取得されていないことを確認
+        $responseContent = $response->getContent();
+        if (!$responseContent) {
+            $this->fail('検索ページのレスポンスが取得できませんでした');
+        }
+
         $movies = Movie::all();
         $foundCount = 0;
         foreach ($movies as $movie) {
-            if ($response->getContent() && str_contains($response->getContent(), $movie->title)) {
+            if (str_contains($responseContent, $movie->title)) {
                 $foundCount++;
             }
         }

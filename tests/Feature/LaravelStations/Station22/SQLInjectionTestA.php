@@ -14,30 +14,6 @@ class SQLInjectionTestA extends TestCase
 
     private User $user;
 
-    public function testSQLインジェションによる全件取得の確認(): void
-    {
-        // ログイン
-        $this->actingAs($this->user);
-
-        $injectionKeyword = "' OR 1 = 1 or '";
-
-        $response = $this->get("/movies?keyword=" . urlencode($injectionKeyword));
-        $response->assertStatus(200);
-
-        // 全ての映画タイトルが表示されていることを確認
-        $movies = Movie::all();
-        foreach ($movies as $movie) {
-            $response->assertSee($movie->title);
-        }
-
-        // SQLインジェクションが発生したことを示すファイルを作成
-        $filePath = base_path('test-outputs/temp/station22-a.txt');
-        if (!file_exists(dirname($filePath))) {
-            mkdir(dirname($filePath), 0777, true);
-        }
-        file_put_contents($filePath, date('Y-m-d H:i:s') . ': SQL Injection test passed');
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -62,5 +38,29 @@ class SQLInjectionTestA extends TestCase
                 'genre_id' => $genre->id
             ]);
         }
+    }
+
+    public function testSQLインジェクションによる全件取得ができる(): void
+    {
+        // ログイン
+        $this->actingAs($this->user);
+
+        $injectionKeyword = "' OR 1 = 1 or '";
+
+        $response = $this->get("/movies?keyword=" . urlencode($injectionKeyword));
+        $response->assertStatus(200);
+
+        // 全ての映画タイトルが表示されていることを確認
+        $movies = Movie::all();
+        foreach ($movies as $movie) {
+            $response->assertSee($movie->title);
+        }
+
+        // SQLインジェクションが発生したことを示すファイルを作成
+        $filePath = base_path('test-outputs/temp/station22-a.txt');
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+        file_put_contents($filePath, date('Y-m-d H:i:s') . ': SQL Injection test passed');
     }
 }

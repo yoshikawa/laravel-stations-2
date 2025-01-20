@@ -148,7 +148,7 @@ class ScreenTest extends TestCase
     /**
      * @dataProvider reservationPatternProvider
      */
-    public function test座席予約パターン(
+    public function test座席予約が実行できる(
         array $schedule1Data,
         array $schedule2Data,
         array $reservations

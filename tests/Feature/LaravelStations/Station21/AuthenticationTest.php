@@ -20,6 +20,40 @@ class AuthenticationTest extends TestCase
     private Schedule $schedule;
     private User $user;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // SheetTableSeederでシートを作成
+        $this->seed(\SheetTableSeeder::class);
+
+        $genre = Genre::create(['name' => 'テストジャンル']);
+        $screen = Screen::create(['name' => 'スクリーン1']);
+
+
+        $this->movie = Movie::create([
+            'title' => 'テスト映画',
+            'image_url' => 'https://test.com/image.jpg',
+            'published_year' => 2024,
+            'description' => 'テスト概要',
+            'is_showing' => true,
+            'genre_id' => $genre->id
+        ]);
+
+        $this->schedule = Schedule::create([
+            'movie_id' => $this->movie->id,
+            'screen_id' => $screen->id,
+            'start_time' => new CarbonImmutable('2024-12-10 10:00:00'),
+            'end_time' => new CarbonImmutable('2024-12-10 12:00:00')
+        ]);
+
+        $this->user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@techbowl.com',
+            'password' => bcrypt('password123'),
+        ]);
+    }
+
     public function test未認証時にアクセス制限されるページ一覧(): void
     {
         $routes = [
@@ -65,7 +99,7 @@ class AuthenticationTest extends TestCase
         $this->assertDatabaseCount('users', 1); // setUp()で作成した1件のみ
     }
 
-    public function testパスワード確認が一致しないとユーザー登録できない(): void
+    public function test_passwordとpassword_confirmationが一致しない場合_ユーザー登録されない(): void
     {
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -74,7 +108,10 @@ class AuthenticationTest extends TestCase
             'password_confirmation' => 'wrongpassword'
         ]);
         $response->assertSessionHasErrors(['password']);
-        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseMissing('users', [
+            'name' => $data['name'],
+            'email' => $data['email']
+        );
     }
 
     public function test正常なユーザー登録(): void
@@ -104,39 +141,5 @@ class AuthenticationTest extends TestCase
         $response = $this->get('/movies/' . $this->movie->id . '/schedules/' . $this->schedule->id . '/reservations/create?date=2024-12-10 10:00&sheetId=' . Sheet::first()->id);
         $response->assertDontSee('name="name"');
         $response->assertDontSee('name="email"');
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // SheetTableSeederでシートを作成
-        $this->seed(\SheetTableSeeder::class);
-
-        $genre = Genre::create(['name' => 'テストジャンル']);
-        $screen = Screen::create(['name' => 'スクリーン1']);
-
-
-        $this->movie = Movie::create([
-            'title' => 'テスト映画',
-            'image_url' => 'https://test.com/image.jpg',
-            'published_year' => 2024,
-            'description' => 'テスト概要',
-            'is_showing' => true,
-            'genre_id' => $genre->id
-        ]);
-
-        $this->schedule = Schedule::create([
-            'movie_id' => $this->movie->id,
-            'screen_id' => $screen->id,
-            'start_time' => new CarbonImmutable('2024-12-10 10:00:00'),
-            'end_time' => new CarbonImmutable('2024-12-10 12:00:00')
-        ]);
-
-        $this->user = User::create([
-            'name' => 'Test User',
-            'email' => 'test@techbowl.com',
-            'password' => bcrypt('password123'),
-        ]);
     }
 }

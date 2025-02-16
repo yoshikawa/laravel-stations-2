@@ -51,6 +51,11 @@ class Schedule extends Model
         return $this->belongsTo(Movie::class);
     }
 
+    public function Screens()
+    {
+        return $this->belongsTo(Screen::class);
+    }
+
     public function storeSchedule($request)
     {
         DB::transaction(function () use ($request) {
